@@ -14,7 +14,7 @@ module speeds
 
             ! Calculate random time of creation
             call random_number(t)
-            t0 = t*pulseLength
+            t0 = (t*pulseLength) - (pulseLength/2.0)
 
             ! CaLculate TOF based on cumulative integral function from real data anf fit by Origin.
             ! Function in Origin is called Logistics5.
@@ -54,19 +54,20 @@ module speeds
             end do
         end subroutine MB_speed
 
-        subroutine lorentzian_distribution(speed)
+        subroutine lorentzian_distribution(gamma, speed)
             implicit none
 
-            double precision :: speed, gamma, rand1
+            double precision :: speed, rand1
+            double precision, intent(in) :: gamma
 
             call random_number(rand1)
-
-            gamma = 40.0D0
 
             speed = gamma*tan(pi*(rand1-0.5D0))
 
         end subroutine lorentzian_distribution
 
+        ! This method apparently is very efficient, however it generates two Gaussian distributed numbers at a time
+        ! Make sure this is incorporated somehow to avoid wasting cycles
         subroutine gaussian_distribution(mean, sigma, z1, z2)
             implicit none
 
