@@ -48,45 +48,6 @@ module directions
 
         end subroutine ingoing_direction
 
-        subroutine transverse_temp(mean, sigma, gamma, l_g_fraction, zPos, travelDistance, startTime, speed, startPoint, vector)
-            implicit none
-
-            double precision, dimension(3) :: startPoint
-            double precision, dimension(3), intent(inout) :: vector
-            double precision, intent(in) :: mean, sigma, l_g_fraction, gamma
-            double precision :: zPos, travelDistance, startTime, speed, transSpeed, rand, z2
-
-            startTime = (startTime + abs(travelDistance/(vector(3)*speed)))
-            startPoint(1) = startPoint(1) + (startTime*speed*vector(1))
-            startPoint(2) = startPoint(2) + (startTime*speed*vector(2))
-            startPoint(3) = zPos
-    
-            vector = vector*speed
-
-            call random_number(rand)
-
-            if (rand .gt. l_g_fraction) then
-                call lorentzian_distribution(gamma, transSpeed)
-            else
-                call gaussian_distribution(mean, sigma, transSpeed, z2)
-            end if
-
-            vector(1) = transSpeed
-
-            call random_number(rand)
-
-            if (rand .gt. l_g_fraction) then
-                call lorentzian_distribution(gamma, transSpeed)
-            else
-                call gaussian_distribution(mean, sigma, transSpeed, z2)
-            end if
-
-            vector(2) = transSpeed
-
-            vector = vector/norm2(vector)
-
-        end subroutine transverse_temp
-
         subroutine rotation(oldVector, theta, newVector)
 
             double precision, intent(in), dimension(3) :: oldVector

@@ -54,15 +54,16 @@ module speeds
             end do
         end subroutine MB_speed
 
+        ! Generates random Lorentizan distributed value. Gamma is the scale parameter equal to HWHM of desired function.
         subroutine lorentzian_distribution(gamma, speed)
             implicit none
 
-            double precision :: speed, rand1
+            double precision :: speed, rand
             double precision, intent(in) :: gamma
 
-            call random_number(rand1)
+            call random_number(rand)
 
-            speed = gamma*tan(pi*(rand1-0.5D0))
+            speed = gamma*tan(pi*(rand-0.5D0))
 
         end subroutine lorentzian_distribution
 
@@ -93,6 +94,40 @@ module speeds
                 end if
             end do
         end subroutine
+
+        ! Adds a transverse speed to molecule exiting final apperture
+        subroutine transverse_temp(mean, sigma, gamma, gaussLorFraction, zPos, travelDistance, startTime, speed, startPoint, vector)
+            implicit none
+
+            double precision, dimension(3) :: startPoint
+            double precision, dimension(3), intent(inout) :: vector
+            double precision, intent(in) :: mean, sigma, gaussLorFraction, gamma
+            double precision :: zPos, travelDistance, startTime, speed, GSpeed1, GSpeed2, LSpeed
+
+            startTime = (startTime + abs(travelDistance/(vector(3)*speed)))
+            startPoint(1) = startPoint(1) + (startTime*speed*vector(1))
+            startPoint(2) = startPoint(2) + (startTime*speed*vector(2))
+            startPoint(3) = zPos
+    
+            vector = vector*speed
+
+            ! Generates Lorentzian speed and TWO Gaussian speeds
+            call lorentzian_distribution(gamma, LSpeed)
+            call gaussian_distribution(mean, sigma, GSpeed1, GSpeed2)
+
+            ! Modifies x-direction of vector with new speed
+            ! Gaussian and Lorentzian fraction weights contribution of each speed
+            vector(1) = (gaussLorFraction*GSpeed1) + ((1D0 - gaussLorFraction)* LSpeed)
+
+            call lorentzian_distribution(gamma, LSpeed)
+
+            ! Same as for x-direction, this modifies y-direction
+            vector(2) = (gaussLorFraction*GSpeed2) + ((1D0 - gaussLorFraction)* LSpeed)
+
+            ! Normalises vector so that molecule is still travelling at original speed overall
+            vector = vector/norm2(vector)
+
+        end subroutine transverse_temp
 
         ! Finds probability of particle travelling at given speed
         function MB_probability(temp, speed, mass) result(probability)
