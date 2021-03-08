@@ -118,7 +118,8 @@ module imaging
 
             double precision, intent(inout), dimension(:,:,:,:) :: image
             integer :: t, i, j, k, NumberOfTimePoints, xPx, zPx, runNumber
-            character(100) :: fileName, runID, imageNumber
+            character(100) :: fileName, runID
+            character(3) :: imageNumber
 
             print "(a)", 'Entering write'
 
@@ -126,11 +127,11 @@ module imaging
 
             do k = 2, 2      
                 do t = 1, NumberOfTimePoints
-                    write(imageNumber, '(i0)') t
+                    write(imageNumber, '(I3)') t
                     if (k == 1) then                
                         write(fileName,'("../Images/Image",I3,".txt")')t
                     else if (k == 2) then
-                        fileName = "../Blurred Images - Run "//trim(runID)//"/Image "//trim(imageNumber)//".txt"
+                        fileName = "../Blurred Images - Run "//trim(runID)//"/Image"//imageNumber//".txt"
                     else
                         write(fileName,'("../Images3/Image",I3,".txt")')t
                     end if
