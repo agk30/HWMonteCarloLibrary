@@ -131,7 +131,7 @@ module imaging
                     if (k == 1) then                
                         write(fileName,'("../Images/Image",I3,".txt")')t
                     else if (k == 2) then
-                        fileName = "../Blurred Images - Run "//trim(runID)//"/Image"//imageNumber//".txt"
+                        fileName = "../Blurred Images/Run "//trim(runID)//"/Image"//imageNumber//".txt"
                     else
                         write(fileName,'("../Images3/Image",I3,".txt")')t
                     end if
