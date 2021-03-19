@@ -113,27 +113,28 @@ module imaging
         end subroutine position_in_probe
 
         ! Writes out image array into a sequence of images
-        subroutine write_image(image, xPx, zPx, NumberOfTimePoints, runNumber)
+        subroutine write_image(image, xPx, zPx, NumberOfTimePoints, runNumber, imagePath, blurredImagePath, ifImagePath)
             implicit none
 
             double precision, intent(inout), dimension(:,:,:,:) :: image
             integer :: t, i, j, k, NumberOfTimePoints, xPx, zPx, runNumber
-            character(100) :: fileName, runID
+            character(200) :: fileName, runID
+            character(200), intent(in) :: imagePath, blurredImagePath, ifImagePath
             character(3) :: imageNumber
 
             print "(a)", 'Entering write'
 
             write(runID, '(i0)') runNumber
 
-            do k = 2, 2      
+            do k = 1, 3     
                 do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I3)') t
                     if (k == 1) then                
-                        write(fileName,'("../Images/Image",I3,".txt")')t
+                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
                     else if (k == 2) then
-                        fileName = "../Blurred Images/Run "//trim(runID)//"/Image"//imageNumber//".txt"
+                        fileName = trim(blurredImagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
                     else
-                        write(fileName,'("../Images3/Image",I3,".txt")')t
+                        fileName = trim(ifImagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
                     end if
 
                     open(unit=20+t,file=filename)

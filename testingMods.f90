@@ -1,5 +1,7 @@
 module mod_tests
     use mathConstants
+    use directions
+    use speeds
 
     integer, dimension(-90:90) :: angleDist
 
@@ -121,5 +123,35 @@ module mod_tests
             end do
 
         end subroutine write_angle_speed
+
+        subroutine point_source (vector, point, finalSpeed, time)
+            implicit none
+
+            double precision :: vector(3), point(3), speed, finalSpeed, time, mass, internalRatio, surfaceMass, initialSpeed
+            double precision :: deflectionAngle, ingoing(3)
+            
+            speed = 1800D0
+
+            internalRatio = 0
+            mass = 17D-3
+            surfaceMass = 100D0
+
+            call cosine_distribution(1, vector)
+
+            ingoing(1) = 0.707106781
+            ingoing(2) = 0
+            ingoing(3) = -0.707106781
+
+            !call deflection_angle(ingoing, vector, deflectionAngle)
+
+            !call soft_sphere_speed(mass, internalRatio, surfaceMass, speed, deflectionAngle, finalSpeed)
+
+            finalSpeed = 1200
+
+            point = 0
+
+            time = 1.2D-4
+
+        end subroutine point_source
 
 end module mod_tests

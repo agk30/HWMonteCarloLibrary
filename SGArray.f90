@@ -44,9 +44,9 @@ module sgconv
             allocate(columnKernel(ksize**2))
 
             ! open(12,file='SG Matrices/CC_027x027_00'//char(polyOrder)//'x00'//char(polyOrder)//'.dat')
-            open(12,file=matrixPath)
+            open(1000,file=matrixPath)
         
-            read(12,*) sgmatrix(1:(((ksize**2)-1)/2)+1)
+            read(1000,*) sgmatrix(1:(((ksize**2)-1)/2)+1)
         
             ! input SG matrices only contain half + 1 of the required array, symmetric about the last entry. this loop builds
             ! the rest of the array
