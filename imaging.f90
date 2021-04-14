@@ -128,13 +128,13 @@ module imaging
 
             do k = 1, 3     
                 do t = 1, NumberOfTimePoints
-                    write(imageNumber, '(I3)') t
+                    write(imageNumber, '(I0.3)') t
                     if (k == 1) then                
-                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
+                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
                     else if (k == 2) then
-                        fileName = trim(blurredImagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
+                        fileName = trim(blurredImagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
                     else
-                        fileName = trim(ifImagePath)//"Run "//trim(runID)//"/Image"//imageNumber//".txt"
+                        fileName = trim(ifImagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
                     end if
 
                     open(unit=20+t,file=filename)
