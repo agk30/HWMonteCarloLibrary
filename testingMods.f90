@@ -128,7 +128,7 @@ module mod_tests
             implicit none
 
             double precision :: vector(3), point(3), speed, finalSpeed, time, mass, internalRatio, surfaceMass, initialSpeed
-            double precision :: deflectionAngle, ingoing(3)
+            double precision :: deflectionAngle, ingoing(3), rand
             
             speed = 1800D0
 
@@ -136,7 +136,7 @@ module mod_tests
             mass = 17D-3
             surfaceMass = 100D0
 
-            call cosine_distribution(1, vector)
+            call cosine_distribution(0, vector)
 
             ingoing(1) = 0.707106781
             ingoing(2) = 0
@@ -146,11 +146,13 @@ module mod_tests
 
             !call soft_sphere_speed(mass, internalRatio, surfaceMass, speed, deflectionAngle, finalSpeed)
 
-            finalSpeed = 1200
+            finalSpeed = 100
 
             point = 0
 
-            time = 1.2D-4
+            call random_number(rand)
+
+            time = 1.2D-4 + ((10D-6)*rand)
 
         end subroutine point_source
 
