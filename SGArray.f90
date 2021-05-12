@@ -84,6 +84,24 @@ module sgconv
 
         end subroutine sg_array
 
+        subroutine sg_convolve(xPx, zPx, NumberOfTimePoints, image, ifoutput)
+            implicit none
+
+            integer :: i, j, k
+            integer, intent(in) :: xPx, zPx, NumberOfTimePoints
+            double precision, dimension(:,:,:,:), intent(inout) :: image
+            double precision, dimension(:,:), intent(in) :: ifoutput
+
+            do i = 1, xPx
+                do j = 1, zPx
+                    do k = 1, NumberOfTimePoints
+                        image(i,j,k,3) = image(i,j,k,2) * ifoutput(i,j)
+                    end do
+                end do
+            end do
+
+        end subroutine sg_convolve
+
 end module sgconv
 
 

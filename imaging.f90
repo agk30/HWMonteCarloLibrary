@@ -1,6 +1,7 @@
 module imaging    
     use mathConstants
     use mod_tests
+    use m_config
 
     ! Array shared by entire class - REMEMBER ALWAYS TO ALLOCATE BEFORE USE
     ! image2 is used in the writing of images viewed from along z axis (see write_imageTest)
@@ -112,6 +113,47 @@ module imaging
 
         end subroutine position_in_probe
 
+        subroutine directory_setup(path1, path2, path3, runID, input_param)
+            implicit none
+
+            character(200), intent(in) :: path1, path2, path3, runID
+            character(200), dimension(3) :: path_array
+            character(:), allocatable :: trim_path, trim_runID, full_path
+            integer :: i, length
+            type(CFG_t) :: input_param
+
+            path_array(1) = path1
+            path_array(2) = path2
+            path_array(3) = path3
+
+            trim_runID = trim(runID)
+
+            print '(a)', "Creating output image directories..."
+
+            do i = 1, 3
+                trim_path = trim(path_array(i))
+                length = len(trim_path)
+
+                ! Uses the lenght of the string to find last character in string
+                ! If last character is a "/" then subdirectory mdkir command does not need a new one
+                ! in the run number directory
+                if (trim_path(length:length) .eq. "/") then
+                    full_path = trim_path//'Run '//trim_runID//'/Image Sequence'
+                else
+                    full_path = trim_path//'/Run '//trim_runID//'/Image Sequence'
+                end if
+
+                ! Length is now used to find the right directory for the config settings file
+                ! Essentially, this is the full path minus "/Image Sequence"
+                length = len(full_path)
+
+                call execute_command_line('mkdir "'//full_path//'"')
+
+                call CFG_write(input_param, full_path(1:(length-15))//"/input_values.cfg", .FALSE., .FALSE.)
+            end do
+
+        end subroutine directory_setup
+
         ! Writes out image array into a sequence of images
         subroutine write_image(image, xPx, zPx, NumberOfTimePoints, runNumber, imagePath, blurredImagePath, ifImagePath)
             implicit none
@@ -130,11 +172,11 @@ module imaging
                 do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I0.3)') t
                     if (k == 1) then                
-                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
+                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Image Sequence/Image_"//imageNumber//".txt"
                     else if (k == 2) then
-                        fileName = trim(blurredImagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
+                        fileName = trim(blurredImagePath)//"Run "//trim(runID)//"/Image Sequence/Image_"//imageNumber//".txt"
                     else
-                        fileName = trim(ifImagePath)//"Run "//trim(runID)//"/Image_"//imageNumber//".txt"
+                        fileName = trim(ifImagePath)//"Run "//trim(runID)//"/Image Sequence/Image_"//imageNumber//".txt"
                     end if
 
                     open(unit=20+t,file=filename)
