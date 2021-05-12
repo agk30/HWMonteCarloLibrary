@@ -113,12 +113,14 @@ module imaging
 
         end subroutine position_in_probe
 
-        subroutine directory_setup(path, runID, input_param)
+        subroutine directory_setup(path, runID, input_param, linux)
             implicit none
 
             character(200), intent(in) :: path, runID
             character(:), allocatable :: trim_path, trim_runID, full_path
-            integer :: length
+            character(200) :: cmd_msg
+            integer :: length, i
+            logical :: linux
             type(CFG_t) :: input_param
 
             trim_runID = trim(runID)
@@ -137,9 +139,15 @@ module imaging
                 full_path = trim_path//'/Run '//trim_runID
             end if
 
-            call execute_command_line('mkdir "'//full_path//'/Raw Images'//'"')
-            call execute_command_line('mkdir "'//full_path//'/Blurred Images'//'"')
-            call execute_command_line('mkdir "'//full_path//'/IF Adjusted Images'//'"')
+            if (linux .eqv. .TRUE.) then
+                call execute_command_line('mkdir -p "'//full_path//'/Raw Images'//'"')
+                call execute_command_line('mkdir -p "'//full_path//'/Blurred Images'//'"')
+                call execute_command_line('mkdir -p "'//full_path//'/IF Adjusted Images'//'"')
+            else
+                call execute_command_line('mkdir "'//full_path//'/Raw Images'//'"')
+                call execute_command_line('mkdir "'//full_path//'/Blurred Images'//'"')
+                call execute_command_line('mkdir "'//full_path//'/IF Adjusted Images'//'"')
+            end if
 
             call CFG_write(input_param, full_path//"/input_values.cfg", .FALSE., .FALSE.)
         end subroutine directory_setup
