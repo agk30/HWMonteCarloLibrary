@@ -118,7 +118,6 @@ module imaging
 
             character(200), intent(in) :: path, runID
             character(:), allocatable :: trim_path, trim_runID, full_path
-            character(200) :: cmd_msg
             integer :: length, i
             logical :: linux
             type(CFG_t) :: input_param
