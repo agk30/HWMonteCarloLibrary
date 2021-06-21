@@ -162,16 +162,18 @@ module imaging
             character(200), intent(in) :: imagePath
             character(3) :: imageNumber
 
-            start_int = int(startDelay*1E6)
-            stop_int = int(stopDelay*1E6)
-            tstep_int = int(tstep*1E6)
+            start_int = nint(startDelay*1E6)
+            stop_int = nint(stopDelay*1E6)
+            tstep_int = nint(tstep*1E6)
 
             print "(a)", 'Entering write'
+
+            print *, tstep_int
 
             write(runID, '(i0)') runNumber
 
             do k = 1, 3     
-                do t = 1, NumberOfTimePoints, tstep_int
+                do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I0.3)') ((t*tstep_int)-(1*tstep_int)+start_int)
                     if (k == 1) then                
                         fileName = trim(imagePath)//"Run "//trim(runID)//"/Raw Images/Image_"//imageNumber//".txt"
