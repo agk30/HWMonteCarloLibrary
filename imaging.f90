@@ -44,17 +44,17 @@ module imaging
              endTimePoint, xPx, zPx, t0, probeStart, tStep, &
              particleSpeed, pxMmRatio, particleVector, particleStartPos, &
              sheetDimensions, testMods, scatterIntensity, fLifeTime, &
-             captureGateOpen, captureGateClose)
+             captureGateOpen, captureGateClose, surface_z)
 
             implicit none
 
             double precision, intent(inout), dimension(:,:,:) :: image
-            integer, intent(in) :: startTimePoint, endTimePoint, xPx, zPx
+            integer, intent(in) :: startTimePoint, endTimePoint, xPx, zPx, surface_z
             double precision, intent(in) :: probeStart, tStep, particleSpeed, pxMmRatio, t0, scatterIntensity, fLifeTime, &
              captureGateOpen, captureGateClose
             double precision, dimension(3), intent(in) :: particleVector, particleStartPos, sheetDimensions
-            integer :: t, posInProbexPx, posinProbeyPx, posInProbezPx, sheetCentrePx, yPx, i
-            double precision :: currentTime, angle, emissionTime
+            integer :: t, posInProbexPx, posinProbeyPx, posInProbezPx, yPx
+            double precision :: currentTime, emissionTime
             double precision, dimension(3) :: posInProbe
             logical, intent(in) :: testMods
             logical :: zImage
@@ -90,7 +90,7 @@ module imaging
                 ! of the image quite well
                 posInProbexPx = (ceiling(posInProbe(1)/pxMmRatio) + floor(real(xPx/2)))
                 posInProbeyPx = (ceiling(posInProbe(2)/pxMmRatio) + floor(real(yPx/2)))
-                posInProbezPx = abs(ceiling(posInProbe(3)/pxMmRatio) - (real(294)))
+                posInProbezPx = abs(ceiling(posInProbe(3)/pxMmRatio) - (real(surface_z)))
                 !TODO put calculation of this factor earlier somewhere
 
                 ! Only writes to array if particle is within bounds of the image
@@ -168,8 +168,6 @@ module imaging
 
             print "(a)", 'Entering write'
 
-            print *, tstep_int
-
             write(runID, '(i0)') runNumber
 
             do k = 1, 3     
@@ -194,7 +192,6 @@ module imaging
                     end do
                 end do
             end do
-
         end subroutine write_image
 
         subroutine convim(imin,nx,ny,gaussdev,imout)

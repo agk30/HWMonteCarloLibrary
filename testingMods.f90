@@ -156,4 +156,11 @@ module mod_tests
 
         end subroutine point_source
 
+        subroutine fixed_speed(particleSpeed, )
+            double precision, intent(inout) :: particleSpeed
+
+
+
+        end subroutine fixed_speed
+
 end module mod_tests
