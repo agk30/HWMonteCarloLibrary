@@ -155,12 +155,4 @@ module mod_tests
             time = 1.2D-4 + ((10D-6)*rand)
 
         end subroutine point_source
-
-        subroutine fixed_speed(particleSpeed, )
-            double precision, intent(inout) :: particleSpeed
-
-
-
-        end subroutine fixed_speed
-
 end module mod_tests
