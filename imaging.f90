@@ -113,29 +113,29 @@ module imaging
 
         end subroutine position_in_probe
 
-        subroutine directory_setup(path, runID, input_param, linux)
+        subroutine directory_setup(path, date_time, input_param, linux)
             implicit none
 
-            character(200), intent(in) :: path, runID
-            character(:), allocatable :: trim_path, trim_runID, full_path
+            character(200), intent(in) :: path
+            character(:), allocatable :: trim_path, full_path
+            character(50) :: year, month, day, hour, min, sec
+            character(17), intent(in) :: date_time
             integer :: length, i
             logical :: linux
             type(CFG_t) :: input_param
-
-            trim_runID = trim(runID)
 
             print '(a)', "Creating output image directories..."
 
             trim_path = trim(path)
             length = len(trim_path)
 
-            ! Uses the lenght of the string to find last character in string
+            ! Uses the lengtt of the string to find last character in string
             ! If last character is a "/" then subdirectory mdkir command does not need a new one
             ! in the run number directory
             if (trim_path(length:length) .eq. "/") then
-                full_path = trim_path//'Run '//trim_runID
+                full_path = trim_path//trim(date_time)
             else
-                full_path = trim_path//'/Run '//trim_runID
+                full_path = trim_path//'/'//trim(date_time)
             end if
 
             if (linux .eqv. .TRUE.) then
@@ -148,18 +148,19 @@ module imaging
                 call execute_command_line('mkdir "'//full_path//'/IF Adjusted Images'//'"')
             end if
 
-            call CFG_write(input_param, full_path//"/input_values.cfg", .FALSE., .FALSE.)
+            call CFG_write(input_param, full_path//"/"//trim(date_time)//"_input_values.cfg", .FALSE., .FALSE.)
         end subroutine directory_setup
 
         ! Writes out image array into a sequence of images
-        subroutine write_image(image, xPx, zPx, startDelay, stopDelay, tstep, NumberOfTimePoints, runNumber, imagePath)
+        subroutine write_image(image, xPx, zPx, startDelay, stopDelay, tstep, NumberOfTimePoints, date_time, imagePath)
             implicit none
 
             double precision, intent(inout), dimension(:,:,:,:) :: image
             double precision :: startDelay, stopDelay, tstep
-            integer :: t, i, j, k, xPx, zPx, runNumber, NumberOfTimePoints, start_int, stop_int, tstep_int
+            integer :: t, i, j, k, xPx, zPx, NumberOfTimePoints, start_int, stop_int, tstep_int
             character(200) :: fileName, runID
             character(200), intent(in) :: imagePath
+            character(17), intent(in) :: date_time
             character(3) :: imageNumber
 
             start_int = nint(startDelay*1E6)
@@ -168,17 +169,15 @@ module imaging
 
             print "(a)", 'Entering write'
 
-            write(runID, '(i0)') runNumber
-
             do k = 1, 3     
                 do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I0.3)') ((t*tstep_int)-(1*tstep_int)+start_int)
                     if (k == 1) then                
-                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Raw Images/Image_"//imageNumber//".txt"
+                        fileName = trim(imagePath)//trim(date_time)//"/Raw Images/Image_"//imageNumber//".txt"
                     else if (k == 2) then
-                        fileName = trim(imagePath)//"Run "//trim(runID)//"/Blurred Images/Image_"//imageNumber//".txt"
+                        fileName = trim(imagePath)//trim(date_time)//"/Blurred Images/Image_"//imageNumber//".txt"
                     else
-                        fileName = trim(imagePath)//"Run "//trim(runID)//"/IF Adjusted Images/Image_"//imageNumber//".txt"
+                        fileName = trim(imagePath)//trim(date_time)//"/IF Adjusted Images/Image_"//imageNumber//".txt"
                     end if
 
                     open(unit=20+t,file=filename)
@@ -281,5 +280,25 @@ module imaging
             emissionTime = -fLifeTime*log(rand)
 
         end subroutine fluorescence_time
+
+        subroutine date_time_string(string)
+            character(17), intent(out) :: string
+            character(4) :: year, month, day, hour, min, sec
+            integer, dimension(8) :: values
+
+            ! Values array holds: (1) year, (2) month, (3) day, (4) UTC difference in mins, (5) hour, (6) minute, (7) seconds, (8) milliseconds
+            call date_and_time(VALUES=values)
+
+            write(year, '(i4)') values(1)
+            write(month, '(i2.2)') values(2)
+            write(day, '(i2.2)') values(3)
+            write(hour, '(i2.2)') values(5)
+            write(min, '(i2.2)') values(6)
+            write(sec, '(i2.2)') values(7)
+
+            string = trim(year)//"-"//trim(month)//"-"//trim(day)//"_"//trim(hour)//trim(min)//trim(sec)
+        end subroutine date_time_string
+
+           
         
 end module imaging
