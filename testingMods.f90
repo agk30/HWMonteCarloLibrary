@@ -155,5 +155,4 @@ module mod_tests
             time = 1.2D-4 + ((10D-6)*rand)
 
         end subroutine point_source
-
 end module mod_tests
