@@ -235,5 +235,120 @@ module speeds
             finalSpeed = SQRT(2*finalEnergy/mass)
 
         end subroutine soft_sphere_speed
+        	! Calculates speed of an ingoing particle based on selection of TOF from a sum of n_s Gaussians
+    ! Time of creation either from the discharge pulse or from sum of n_t Gaussians.
+
+        subroutine ingoing_speed_from_Gauss(w_s, m_s, std_s, w_t, m_t, std_t, n_s, n_t, gauss_time, dist, pulseLength, speed, t0)
+
+            implicit none
+
+            double precision, dimension(:) :: m_s, w_s, std_s
+            double precision, dimension(:) :: m_t, w_t, std_t
+            double precision :: dist, pulseLength
+            double precision :: speed, t0
+            logical :: gauss_time
+            integer :: n_t, n_s
+        
+            double precision :: t, x, w_low, w_upper, w_sum
+            double precision :: arrivalTime
+            integer :: ng
+
+            if (gauss_time) then
+        
+            ! Choose the random creation time from a sum of Gaussians, for simulation of normal MB
+            ! Normalise the Gaussian weights to sum to unity first, just in case.
+            w_sum = 0.0d0
+            do ng = 1, n_t
+                w_sum = w_sum + w_t(ng)
+            end do
+            w_t = w_t / w_sum
+
+            call random_number(x)
+
+            w_low = 0.0d0
+            w_upper = 0.0d0
+
+                do ng = 1, n_t
+                w_upper = w_upper + w_t(ng)
+                if(x.ge.w_low.and.x.lt.w_upper)then
+                call rnm(m_t(ng), std_t(ng), t0)
+                end if
+                w_low = w_low + w_t(ng)
+                end do
+            else
+
+    ! Choose a random time of creation from a squarewave, simulating discharge
+
+                call random_number(t)
+                t0 = (t*pulseLength) - (pulseLength/2.0)
+
+            end if !End if statement for choice of t0 initialisation.
+            
+
+            ! Pick a TOF from a distribution based on real data fitted to n_s Gaussians. Will be used to
+            ! calculate the speed etc.
+
+            ! Normalise the Gaussian weights to sum to unity first, just in case.
+                w_sum = 0.0d0
+                    do ng = 1, n_s
+                        w_sum = w_sum + w_s(ng)
+                    end do
+                w_s = w_s / w_sum
+
+            call random_number(x)
+        
+            w_low = 0.0d0
+            w_upper = 0.0d0
+                do ng = 1, n_s
+                w_upper = w_upper + w_s(ng)
+                if(x.ge.w_low.and.x.lt.w_upper)then
+                call rnm(m_s(ng), std_s(ng), arrivalTime)
+                end if
+                w_low = w_low + w_s(ng)
+                end do
+                
+            speed = dist/(arrivalTime*1.0D-6)
+        
+        end subroutine ingoing_speed_from_Gauss
+
+        subroutine rnm(rmean, sd,rand)
+
+            double precision random
+            double precision x,u,s,t,c0,c1,c2,d1,d2,d3,t2,t3,rand,rmean,sd
+        
+            call random_number(x)
+        
+            if(x.gt.0.999999)then
+                       x=0.999999
+            endif
+        
+            if(x.lt.1.0e-6)then
+                       u=1.0e-06
+                   else
+                       u=x
+            endif
+        
+            s = 1.
+        
+            if (u .gt. 0.5) then
+                      u = 1. - u
+                      s = -1.
+            end if
+        
+            t = sqrt(- (2 * log(u)))
+            c0 = 2.515517
+            c1 = 0.802853
+            c2 = 0.010328
+            d1 = 1.432788
+            d2 = 0.189269
+            d3 = 0.001308
+            t2 = t * t
+            t3 = t * t2
+            x = s * (t - (((c0 + (c1 * t)) + (c2 * t2)) / (((1. + (d1 * t)) + (d2 * t2)) + (d3 * t3))))
+        
+            rand = rmean + (x * sd)
+            return
+        
+        end subroutine rnm
 
 end module speeds
