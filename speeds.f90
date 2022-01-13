@@ -255,29 +255,29 @@ module speeds
 
             if (gauss_time) then
         
-            ! Choose the random creation time from a sum of Gaussians, for simulation of normal MB
-            ! Normalise the Gaussian weights to sum to unity first, just in case.
-            w_sum = 0.0d0
-            do ng = 1, n_t
-                w_sum = w_sum + w_t(ng)
-            end do
-            w_t = w_t / w_sum
+                ! Choose the random creation time from a sum of Gaussians, for simulation of normal MB
+                ! Normalise the Gaussian weights to sum to unity first, just in case.
+                w_sum = 0.0d0
+                do ng = 1, n_t
+                    w_sum = w_sum + w_t(ng)
+                end do
+                w_t = w_t / w_sum
 
-            call random_number(x)
+                call random_number(x)
 
-            w_low = 0.0d0
-            w_upper = 0.0d0
+                w_low = 0.0d0
+                w_upper = 0.0d0
 
                 do ng = 1, n_t
-                w_upper = w_upper + w_t(ng)
-                if(x.ge.w_low.and.x.lt.w_upper)then
-                call rnm(m_t(ng), std_t(ng), t0)
-                end if
-                w_low = w_low + w_t(ng)
+                    w_upper = w_upper + w_t(ng)
+                    if(x.ge.w_low.and.x.lt.w_upper)then
+                        call rnm(m_t(ng), std_t(ng), t0)
+                    end if
+                    w_low = w_low + w_t(ng)
                 end do
             else
 
-    ! Choose a random time of creation from a squarewave, simulating discharge
+                ! Choose a random time of creation from a squarewave, simulating discharge
 
                 call random_number(t)
                 t0 = (t*pulseLength) - (pulseLength/2.0)
@@ -325,20 +325,20 @@ module speeds
             call random_number(x)
         
             if(x.gt.0.999999)then
-                       x=0.999999
+                x=0.999999
             endif
         
             if(x.lt.1.0e-6)then
-                       u=1.0e-06
-                   else
-                       u=x
+                u=1.0e-06
+            else
+                u=x
             endif
         
             s = 1.
         
             if (u .gt. 0.5) then
-                      u = 1. - u
-                      s = -1.
+                u = 1E0 - u
+                s = -1E0
             end if
         
             t = sqrt(- (2 * log(u)))
