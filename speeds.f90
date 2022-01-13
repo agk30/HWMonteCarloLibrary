@@ -250,7 +250,7 @@ module speeds
             integer :: n_t, n_s
         
             double precision :: t, x, w_low, w_upper, w_sum
-            double precision :: arrivalTime
+            double precision :: arrivalTime, time_offset, z2
             integer :: ng
 
             if (gauss_time) then
@@ -303,11 +303,17 @@ module speeds
                 w_upper = w_upper + w_s(ng)
                 if(x.ge.w_low.and.x.lt.w_upper)then
                 call rnm(m_s(ng), std_s(ng), arrivalTime)
+                !call gaussian_distribution(m_s(ng), std_s(ng), arrivalTime, z2)
                 end if
                 w_low = w_low + w_s(ng)
                 end do
+            
+            time_offset = 22.9
+            arrivalTime = arrivalTime + time_offset
+            t0 = t0! + (time_offset*1E-6)
                 
             speed = dist/(arrivalTime*1.0D-6)
+            !print *, speed, dist, arrivalTime
         
         end subroutine ingoing_speed_from_Gauss
 
