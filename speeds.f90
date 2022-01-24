@@ -309,8 +309,8 @@ module speeds
                 end do
             
             time_offset = 22.9
-            arrivalTime = arrivalTime + time_offset
-            t0 = t0! + (time_offset*1E-6)
+            arrivalTime = arrivalTime - time_offset
+            t0 = t0 + (time_offset*1E-6)
                 
             speed = dist/(arrivalTime*1.0D-6)
             !print *, speed, dist, arrivalTime

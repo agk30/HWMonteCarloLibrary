@@ -113,11 +113,12 @@ module imaging
 
         end subroutine position_in_probe
 
-        subroutine directory_setup(path, date_time, input_param, linux)
+        subroutine directory_setup(path, date_time, input_param, linux, full_path)
             implicit none
 
             character(200), intent(in) :: path
-            character(:), allocatable :: trim_path, full_path
+            character(:), allocatable :: trim_path
+            character(:), allocatable, intent(out) :: full_path
             character(50) :: year, month, day, hour, min, sec
             character(17), intent(in) :: date_time
             integer :: length, i
