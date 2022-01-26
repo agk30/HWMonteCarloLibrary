@@ -125,8 +125,6 @@ module imaging
             logical :: linux
             type(CFG_t) :: input_param
 
-            print '(a)', "Creating output image directories..."
-
             trim_path = trim(path)
             length = len(trim_path)
 
@@ -167,8 +165,6 @@ module imaging
             start_int = nint(startDelay*1E6)
             stop_int = nint(stopDelay*1E6)
             tstep_int = nint(tstep*1E6)
-
-            print "(a)", 'Entering write'
 
             do k = 1, 3     
                 do t = 1, NumberOfTimePoints

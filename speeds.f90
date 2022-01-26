@@ -308,7 +308,8 @@ module speeds
                 w_low = w_low + w_s(ng)
                 end do
             
-            time_offset = 22.9
+            time_offset = 23.9
+            !time_offset = 20.9
             arrivalTime = arrivalTime - time_offset
             t0 = t0 + (time_offset*1E-6)
                 
