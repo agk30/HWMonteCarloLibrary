@@ -98,8 +98,10 @@ module imaging
                     ! Mimics gating process. Emission only detected if it occurs between gate open and gate close
                     if ((emissionTime .gt. captureGateOpen) .and. (emissionTime .lt. captureGateClose)) then            
                         if (particleVector(3) .gt. 0) then
+                            ! If particle scatters from surface (vector component in z direction > 0) use relative scattering intensity
                             image(posInProbezPx,posInProbexPx,t) = image(posInProbezPx,posInProbexPx,t) + scatterIntensity
                         else
+                            ! else just use unit intensity
                             image(posInProbezPx,posInProbexPx,t) = image(posInProbezPx,posInProbexPx,t) + 1D0
                         end if
                     end if
@@ -165,6 +167,8 @@ module imaging
             start_int = nint(startDelay*1E6)
             stop_int = nint(stopDelay*1E6)
             tstep_int = nint(tstep*1E6)
+
+            print "(a)", adjustr(trim("Writing image files"))
 
             do k = 1, 3     
                 do t = 1, NumberOfTimePoints
