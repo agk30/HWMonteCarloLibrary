@@ -115,7 +115,7 @@ module imaging
 
         end subroutine position_in_probe
 
-        subroutine directory_setup(path, date_time, input_param, linux, full_path)
+        subroutine directory_setup(path, date_time, linux, full_path)
             implicit none
 
             character(200), intent(in) :: path
@@ -125,7 +125,6 @@ module imaging
             character(17), intent(in) :: date_time
             integer :: length, i
             logical :: linux
-            type(CFG_t) :: input_param
 
             trim_path = trim(path)
             length = len(trim_path)
@@ -149,7 +148,6 @@ module imaging
                 call execute_command_line('mkdir "'//full_path//'/IF Adjusted Images'//'"')
             end if
 
-            call CFG_write(input_param, full_path//"/"//trim(date_time)//"_input_values.cfg", .FALSE., .FALSE.)
         end subroutine directory_setup
 
         ! Writes out image array into a sequence of images
