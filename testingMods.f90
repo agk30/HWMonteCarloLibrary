@@ -155,4 +155,25 @@ module mod_tests
             time = 1.2D-4 + ((10D-6)*rand)
 
         end subroutine point_source
+
+        integer function find_bin_index(value, bin_range, bin_size, num_bins)
+
+            implicit none
+            double precision, dimension(2) :: bin_range
+            double precision :: bin_size, value
+            integer :: num_bins, i, index
+
+            do i = 1, num_bins
+                if (value .lt. (bin_range(1) + (i-1)*bin_size)) then
+                    index = i
+                    if (i .eq. 1) then
+                        !print *, particleSpeed
+                    end if
+                    EXIT
+                end if
+            end do
+
+            find_bin_index = index
+
+        end function find_bin_index
 end module mod_tests
