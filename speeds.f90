@@ -238,7 +238,7 @@ module speeds
         	! Calculates speed of an ingoing particle based on selection of TOF from a sum of n_s Gaussians
     ! Time of creation either from the discharge pulse or from sum of n_t Gaussians.
 
-        subroutine ingoing_speed_from_Gauss(w_s, m_s, std_s, w_t, m_t, std_t, n_s, n_t, gauss_time, dist, pulseLength, speed, t0)
+        subroutine ingoing_speed_from_Gauss(w_s, m_s, std_s, w_t, m_t, std_t, n_s, n_t, gauss_time, dist, pulseLength, speed, t0, time_offset)
 
             implicit none
 
@@ -308,7 +308,7 @@ module speeds
                 w_low = w_low + w_s(ng)
                 end do
             
-            time_offset = 23.9
+            !time_offset = 23.9
             !time_offset = 20.9
             arrivalTime = arrivalTime - time_offset
             t0 = t0 + (time_offset*1E-6)
