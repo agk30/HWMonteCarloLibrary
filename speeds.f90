@@ -130,7 +130,7 @@ module speeds
  
         end subroutine transverse_temp_test 
 
-        subroutine transverse_temp(mean, sigma, gamma, l_g_fraction, zPos, travelDistance, startTime, speed, startPoint, vector)
+        subroutine transverse_speed(mean, sigma, gamma, l_g_fraction, zPos, travelDistance, startTime, speed, startPoint, vector)
             implicit none
 
             double precision, dimension(3) :: startPoint
@@ -167,7 +167,7 @@ module speeds
 
             vector = vector/norm2(vector)
 
-        end subroutine transverse_temp
+        end subroutine transverse_speed
 
         ! Finds probability of particle travelling at given speed
         function MB_probability(temp, speed, mass) result(probability)

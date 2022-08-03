@@ -66,7 +66,7 @@ module imaging
             ! for sake of creating image viewed along z axis, y pixels are the same as z but can be changed if needed
             yPx = zPx
 
-            ! Loops from entry timepont to exit timepoint to avoic wasting cycles when particle is not within sheet
+            ! Loops from entry timepont to exit timepoint to avoid wasting cycles when particle is not within sheet
             do t = startTimePoint, endTimePoint
                 ! currentTime refers to the time it has taken the particle to travel from its starting point
                 ! to the point in space at the given timepoint

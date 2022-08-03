@@ -12,7 +12,7 @@ module directions
             double precision, dimension(3) :: skimmer, collimator
             double precision, intent (in) :: valveRad, valvePos, skimRad, skimPos, colRad, colPos
             double precision, intent(out), dimension(3) :: ingoingUnitVector, valve
-            double precision :: mx, my, cx, cy, z
+            double precision :: mx, my, cx, cy, z, mag
             logical :: hit
 
             hit = .FALSE.
@@ -34,14 +34,21 @@ module directions
                 call fit_line(valve(2), valve(3), skimmer(2), skimmer(3), my, cy)
 
                 ! Caclulates positoin of particle at collimator and decides if it passes through or not
-                collimator(1) = mx*(valvePos - colPos) + cx
-                collimator(2) = my*(valvePos - colPos) + cy
+                collimator(1) = mx*(colPos) + cx
+                collimator(2) = my*(colPos) + cy
                 collimator(3) = colPos
                 ! z is the hypotenuse of the triangle formed using x and y coordinates of the particle's collimator position
                 z = SQRT(collimator(1)**2 + collimator(2)**2)
                 
                 if (z .lt. colRad) then
-                    call unit_vector(mx, my, ingoingUnitVector)
+                    !call unit_vector(mx, my, alternateVector)
+                    ingoingUnitVector(1) = (skimmer(1) - valve(1))
+                    ingoingUnitVector(2) = (skimmer(2) - valve(2))
+                    ingoingUnitVector(3) = (skimmer(3) - valve(3))
+
+                    mag  = sqrt(ingoingUnitVector(1)**2 + ingoingUnitVector(2)**2 + ingoingUnitVector(3)**2)
+
+                    ingoingUnitVector = ingoingUnitVector/mag
                     hit = .TRUE.
                 end if
             end do
@@ -138,7 +145,7 @@ module directions
             double precision, dimension(3), intent(out) :: v
             double precision :: magnitude
 
-            magnitude = sqrt(mx**2.0D0 + my**2.0D0 + 1.0D0)
+            magnitude = sqrt(mx**2 + my**2 + 1.0D0)
             v(1) = mx/magnitude
             v(2) = my/magnitude
             v(3) = -1.0D0/magnitude
