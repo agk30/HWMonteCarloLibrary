@@ -153,7 +153,7 @@ module speeds
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
-            vector(1) = transSpeed
+            vector(1) = vector(1) + transSpeed
 
             call random_number(rand)
 
@@ -163,7 +163,7 @@ module speeds
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
-            vector(2) = transSpeed
+            vector(2) = vector(2) + transSpeed
 
             vector = vector/norm2(vector)
 
