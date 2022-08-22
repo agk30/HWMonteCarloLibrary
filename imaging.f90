@@ -167,7 +167,7 @@ module imaging
 
             print "(a)", adjustr(trim("Writing image files"))
 
-            do k = 2, 2     
+            do k = 1, 2     
                 do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I0.3)') ((t*tstep_int)-(1*tstep_int)+start_int)
                     if (k == 1) then                
