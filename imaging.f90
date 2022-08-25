@@ -115,18 +115,25 @@ module imaging
 
         end subroutine position_in_probe
 
-        subroutine directory_setup(path, date_time, linux, full_path)
+        subroutine directory_setup(path, date_time, linux, full_path, raw_path, blur_path, if_path, input_string, parent_path)
             implicit none
 
             character(200), intent(in) :: path
-            character(:), allocatable :: trim_path
-            character(:), allocatable, intent(out) :: full_path
+            character(200) :: string1, string2
+            character(:), allocatable :: trim_path, delim, minus_extension
+            character(:), allocatable, intent(out) :: full_path, raw_path, blur_path, if_path, parent_path
+            character(:), allocatable, intent(in) :: input_string
             character(17), intent(in) :: date_time
             integer :: length, i
             logical :: linux
 
             trim_path = trim(path)
             length = len(trim_path)
+            delim = "."
+            call split_string(input_string, string1, string2, delim)
+            delim = "/"
+            minus_extension = string1
+            call split_string(minus_extension, string1, string1, delim)
 
             ! Uses the lengtt of the string to find last character in string
             ! If last character is a "/" then subdirectory mdkir command does not need a new one
@@ -137,10 +144,16 @@ module imaging
                 full_path = trim_path//'/'//trim(date_time)
             end if
 
+            parent_path = full_path//"_"//trim(string1)
+            raw_path = full_path//"_"//trim(string1)//'/Raw Images'
+            blur_path = full_path//"_"//trim(string1)//'/Blurred Images'
+            if_path = full_path//"_"//trim(string1)//'/IF Adjusted Images'
+
             if (linux .eqv. .TRUE.) then
-                call execute_command_line('mkdir -p "'//full_path//'/Raw Images'//'"')
-                call execute_command_line('mkdir -p "'//full_path//'/Blurred Images'//'"')
-                call execute_command_line('mkdir -p "'//full_path//'/IF Adjusted Images'//'"')
+
+                call execute_command_line('mkdir -p "'//raw_path//'"')
+                call execute_command_line('mkdir -p "'//blur_path//'"')
+                call execute_command_line('mkdir -p "'//if_path//'"')
             else
                 call execute_command_line('mkdir "'//full_path//'/Raw Images'//'"')
                 call execute_command_line('mkdir "'//full_path//'/Blurred Images'//'"')
@@ -150,14 +163,14 @@ module imaging
         end subroutine directory_setup
 
         ! Writes out image array into a sequence of images
-        subroutine write_image(image, xPx, zPx, startDelay, stopDelay, tstep, NumberOfTimePoints, date_time, imagePath)
+        subroutine write_image(image, xPx, zPx, startDelay, stopDelay, tstep, NumberOfTimePoints, date_time, raw_path, blur_path, if_path)
             implicit none
 
             double precision, intent(inout), dimension(:,:,:,:) :: image
             double precision :: startDelay, stopDelay, tstep
             integer :: t, i, j, k, xPx, zPx, NumberOfTimePoints, start_int, stop_int, tstep_int
             character(200) :: fileName, runID
-            character(200), intent(in) :: imagePath
+            character(:), allocatable, intent(in) :: raw_path, blur_path, if_path
             character(17), intent(in) :: date_time
             character(3) :: imageNumber
 
@@ -171,11 +184,11 @@ module imaging
                 do t = 1, NumberOfTimePoints
                     write(imageNumber, '(I0.3)') ((t*tstep_int)-(1*tstep_int)+start_int)
                     if (k == 1) then                
-                        fileName = trim(imagePath)//trim(date_time)//"/Raw Images/Image_"//imageNumber//".txt"
+                        fileName = trim(raw_path)//"/image_"//imageNumber//".txt"
                     else if (k == 2) then
-                        fileName = trim(imagePath)//trim(date_time)//"/Blurred Images/Image_"//imageNumber//".txt"
+                        fileName = blur_path//"/image_"//imageNumber//".txt"
                     else
-                        fileName = trim(imagePath)//trim(date_time)//"/IF Adjusted Images/Image_"//imageNumber//".txt"
+                        fileName = if_path//"/image_"//imageNumber//".txt"
                     end if
 
                     open(unit=20+t,file=filename)
@@ -296,6 +309,19 @@ module imaging
 
             string = trim(year)//"-"//trim(month)//"-"//trim(day)//"_"//trim(hour)//trim(min)//trim(sec)
         end subroutine date_time_string
+
+        SUBROUTINE split_string(instring, string1, string2, delim)
+            CHARACTER(:), allocatable :: instring,delim
+            CHARACTER(200),INTENT(OUT):: string1,string2
+            INTEGER :: index
+        
+            instring = TRIM(instring)
+        
+            index = SCAN(instring,delim)
+            string1 = instring(1:index-1)
+            string2 = instring(index+1:)
+        
+        END SUBROUTINE split_string
 
            
         
