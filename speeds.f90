@@ -253,6 +253,11 @@ module speeds
             double precision :: arrivalTime, time_offset, z2
             integer :: ng
 
+            m_t = [28D-6, 38D-6]
+            std_t = [5.3D-6, 8.6D-6]
+            n_t = 2
+            w_t = [1D0, 1D0]
+
             if (gauss_time) then
         
                 ! Choose the random creation time from a sum of Gaussians, for simulation of normal MB
@@ -357,5 +362,15 @@ module speeds
             return
         
         end subroutine rnm
+
+        subroutine random_gauss_speed(mean, sigma, speed_out)
+
+            double precision, intent(in) :: mean, sigma
+            double precision :: dump
+            double precision, intent(out) :: speed_out
+
+            call gaussian_distribution(mean, sigma, speed_out, dump)
+
+        end subroutine
 
 end module speeds
