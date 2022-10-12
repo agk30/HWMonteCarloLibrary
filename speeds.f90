@@ -253,11 +253,6 @@ module speeds
             double precision :: arrivalTime, time_offset, z2
             integer :: ng
 
-            m_t = [28D-6, 38D-6]
-            std_t = [5.3D-6, 8.6D-6]
-            n_t = 2
-            w_t = [1D0, 1D0]
-
             if (gauss_time) then
         
                 ! Choose the random creation time from a sum of Gaussians, for simulation of normal MB
@@ -315,10 +310,10 @@ module speeds
             
             !time_offset = 23.9
             !time_offset = 20.9
-            arrivalTime = arrivalTime - time_offset
-            t0 = t0 + (time_offset*1E-6)
+            !arrivalTime = arrivalTime - time_offset
+            !t0 = t0 + (time_offset*1E-6)
                 
-            speed = dist/(arrivalTime*1.0D-6)
+            speed = dist/(arrivalTime)
             !print *, speed, dist, arrivalTime
         
         end subroutine ingoing_speed_from_Gauss
