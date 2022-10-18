@@ -200,6 +200,7 @@ module imaging
 
                         write(20+t,*)
                     end do
+                    close(unit=20+t)
                 end do
             end do
         end subroutine write_image
