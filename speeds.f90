@@ -147,7 +147,7 @@ module speeds
 
             call random_number(rand)
 
-            if (rand .gt. l_g_fraction) then
+            if (rand .lt. l_g_fraction) then
                 call lorentzian_distribution(gamma, transSpeed)
             else
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
@@ -157,7 +157,7 @@ module speeds
 
             call random_number(rand)
 
-            if (rand .gt. l_g_fraction) then
+            if (rand .lt. l_g_fraction) then
                 call lorentzian_distribution(gamma, transSpeed)
             else
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
