@@ -165,6 +165,7 @@ module speeds
 
             vector(2) = vector(2) + transSpeed
 
+            speed = norm2(vector)
             vector = vector/norm2(vector)
 
         end subroutine transverse_speed
