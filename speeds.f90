@@ -153,7 +153,8 @@ module speeds
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
-            vector(1) = vector(1) + transSpeed
+            !vector(1) = vector(1) + transSpeed
+            vector(1) = transSpeed
 
             call random_number(rand)
 
@@ -163,7 +164,8 @@ module speeds
                 call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
-            vector(2) = vector(2) + transSpeed
+            !vector(2) = vector(2) + transSpeed
+            vector(2) = transSpeed
 
             speed = norm2(vector)
             vector = vector/norm2(vector)
@@ -312,7 +314,7 @@ module speeds
             !time_offset = 23.9
             !time_offset = 20.9
             !arrivalTime = arrivalTime - time_offset
-            !t0 = t0 + (time_offset*1E-6)
+            t0 = t0 + time_offset
                 
             speed = dist/(arrivalTime)
             !print *, speed, dist, arrivalTime
