@@ -79,6 +79,30 @@ module directions
 
         end subroutine rotation
 
+        subroutine rotation_z(oldVector, theta, newVector)
+
+            double precision, intent(in), dimension(3) :: oldVector
+            double precision, intent(out), dimension(3) :: newVector
+            double precision, dimension(3,3) :: rotationMatrix
+            double precision, intent(in) :: theta
+            double precision :: costheta, sintheta
+            
+            costheta = cos(theta*((2*pi)/360.0D0))
+            sintheta = sin(theta*((2*pi)/360.0D0))
+
+            ! this matrix is for roation about the y axis only. Rotation about any other axis will require a different matrix.
+            rotationMatrix = 0
+            rotationMatrix(1,1) = costheta
+            rotationMatrix(1,2) = -sintheta
+            rotationMatrix(2,1) = sintheta
+            rotationMatrix(2,2) = costheta
+            rotationMatrix(3,3) = 1
+
+            ! multiplies the rotation matrix by the vector in question
+            newVector = MATMUL(rotationMatrix, oldVector)
+
+        end subroutine rotation_z
+
         ! It must be noted that this cosine distribution of scattering angles is simply a function that fits data,
         ! not necessarily the absolute correct distribution one would expect to see
         subroutine cosine_distribution(cosinePower, scatteredDirection)
