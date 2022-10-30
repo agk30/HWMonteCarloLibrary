@@ -150,18 +150,20 @@ module speeds
             if (rand .lt. l_g_fraction) then
                 call lorentzian_distribution(gamma, transSpeed)
             else
-                call gaussian_distribution(mean, sigma, transSpeed, z2)
+                call lorentzian_distribution(300D0, transSpeed)
+                !call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
             !vector(1) = vector(1) + transSpeed
-            vector(1) = transSpeed
+            vector(1) = transSpeed*(speed/2050D0)**2
 
             call random_number(rand)
 
             if (rand .lt. l_g_fraction) then
                 call lorentzian_distribution(gamma, transSpeed)
             else
-                call gaussian_distribution(mean, sigma, transSpeed, z2)
+                call lorentzian_distribution(300D0, transSpeed)
+                !call gaussian_distribution(mean, sigma, transSpeed, z2)
             end if
 
             !vector(2) = vector(2) + transSpeed
