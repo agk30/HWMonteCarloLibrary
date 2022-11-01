@@ -136,7 +136,10 @@ module speeds
             double precision, dimension(3) :: startPoint
             double precision, dimension(3), intent(inout) :: vector
             double precision, intent(in) :: mean, sigma, l_g_fraction, gamma
-            double precision :: zPos, travelDistance, startTime, speed, transSpeed, rand, z2
+            double precision :: zPos, travelDistance, startTime, speed, transSpeed, rand, z2, speed_limit
+            logical :: good_speed
+
+            speed_limit = 1D9
 
             startTime = (startTime + abs(travelDistance/(vector(3)*speed)))
             startPoint(1) = startPoint(1) + (startTime*speed*vector(1))
@@ -145,26 +148,40 @@ module speeds
 
             vector = vector*speed
 
-            call random_number(rand)
+            good_speed = .FALSE.
 
-            if (rand .lt. l_g_fraction) then
-                call lorentzian_distribution(gamma, transSpeed)
-            else
-                call lorentzian_distribution(300D0, transSpeed)
-                !call gaussian_distribution(mean, sigma, transSpeed, z2)
-            end if
+            do while (.not. good_speed)
+            call random_number(rand)
+                if (rand .lt. l_g_fraction) then
+                    call lorentzian_distribution(gamma, transSpeed)
+                else
+                    call lorentzian_distribution(300D0, transSpeed)
+                    !call gaussian_distribution(mean, sigma, transSpeed, z2)
+                end if
+
+                if (transSpeed .lt. speed_limit) then
+                    good_speed = .TRUE.
+                end if
+            end do
 
             !vector(1) = vector(1) + transSpeed
             vector(1) = transSpeed*(speed/2050D0)**2
+            
+            good_speed = .FALSE.
 
+            do while (.not. good_speed)
             call random_number(rand)
+                if (rand .lt. l_g_fraction) then
+                    call lorentzian_distribution(gamma, transSpeed)
+                else
+                    call lorentzian_distribution(300D0, transSpeed)
+                    !call gaussian_distribution(mean, sigma, transSpeed, z2)
+                end if
 
-            if (rand .lt. l_g_fraction) then
-                call lorentzian_distribution(gamma, transSpeed)
-            else
-                call lorentzian_distribution(300D0, transSpeed)
-                !call gaussian_distribution(mean, sigma, transSpeed, z2)
-            end if
+                if (transSpeed .lt. speed_limit) then
+                    good_speed = .TRUE.
+                end if
+            end do
 
             !vector(2) = vector(2) + transSpeed
             vector(2) = transSpeed

@@ -176,4 +176,20 @@ module directions
 
         end subroutine unit_vector
 
+        subroutine surface_selection(position, circle_centre, circle_rad, bottom_limit, hits_surface)
+
+            double precision, dimension(3), intent(in) :: position, circle_centre
+            double precision, intent(in) :: circle_rad, bottom_limit
+            logical, intent(out) :: hits_surface
+
+            hits_surface = .FALSE.
+
+            if (position(2) .gt. (circle_centre(2) + bottom_limit)) then
+                if (((position(1) - circle_centre(1))**2 + (position(2) - circle_centre(2))**2) .lt. circle_rad**2) then
+                    hits_surface = .TRUE.
+                end if
+            end if
+
+        end subroutine surface_selection
+
 end module directions
