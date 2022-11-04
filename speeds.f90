@@ -191,6 +191,39 @@ module speeds
 
         end subroutine transverse_speed
 
+        subroutine transverse_speed_two_lor(gamma, gamma2, l_g_fraction, speed, vector)
+            implicit none
+
+            double precision, dimension(3) :: startPoint
+            double precision, dimension(3), intent(inout) :: vector
+            double precision, intent(in) :: l_g_fraction, gamma, gamma2
+            double precision :: speed, transSpeed, rand
+
+            vector = vector*speed
+
+            call random_number(rand)
+            if (rand .lt. l_g_fraction) then
+                call lorentzian_distribution(gamma, transSpeed)
+            else
+                call lorentzian_distribution(gamma2, transSpeed)
+            end if
+
+            vector(1) = transSpeed
+
+            call random_number(rand)
+            if (rand .lt. l_g_fraction) then
+                call lorentzian_distribution(gamma, transSpeed)
+            else
+                call lorentzian_distribution(gamma2, transSpeed)
+            end if
+
+            vector(2) = transSpeed
+
+            speed = norm2(vector)
+            vector = vector/speed
+
+        end subroutine transverse_speed_two_lor
+
         ! Finds probability of particle travelling at given speed
         function MB_probability(temp, speed, mass) result(probability)
 
