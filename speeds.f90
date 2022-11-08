@@ -194,7 +194,6 @@ module speeds
         subroutine transverse_speed_two_lor(gamma, gamma2, l_g_fraction, speed, vector)
             implicit none
 
-            double precision, dimension(3) :: startPoint
             double precision, dimension(3), intent(inout) :: vector
             double precision, intent(in) :: l_g_fraction, gamma, gamma2
             double precision :: speed, transSpeed, rand
