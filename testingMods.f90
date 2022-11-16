@@ -176,4 +176,14 @@ module mod_tests
             find_bin_index = index
 
         end function find_bin_index
+
+        subroutine two_vector_angle(vector1, vector2, angle)
+            implicit none
+
+            double precision, dimension(3) :: vector1, vector2
+            double precision :: angle
+
+            angle = acosd(dot_product(vector1,vector2)/(norm2(vector1)*norm2(vector2)))
+
+        end subroutine two_vector_angle
 end module mod_tests
