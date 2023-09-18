@@ -300,7 +300,7 @@ module speeds
             double precision, dimension(:) :: m_t, w_t, std_t
             double precision :: dist, pulseLength
             double precision :: speed, t0
-            logical :: gauss_time
+            logical :: gauss_time, positive_time
             integer :: n_t, n_s
         
             double precision :: t, x, w_low, w_upper, w_sum
@@ -349,18 +349,25 @@ module speeds
                     end do
                 w_s = w_s / w_sum
 
-            call random_number(x)
+            positive_time = .false.
+            do while (.not. positive_time)
+
+                call random_number(x)
         
-            w_low = 0.0d0
-            w_upper = 0.0d0
-                do ng = 1, n_s
-                w_upper = w_upper + w_s(ng)
-                if(x.ge.w_low.and.x.lt.w_upper)then
-                call rnm(m_s(ng), std_s(ng), arrivalTime)
-                !call gaussian_distribution(m_s(ng), std_s(ng), arrivalTime, z2)
+                w_low = 0.0d0
+                w_upper = 0.0d0
+                    do ng = 1, n_s
+                    w_upper = w_upper + w_s(ng)
+                    if(x.ge.w_low.and.x.lt.w_upper)then
+                    call rnm(m_s(ng), std_s(ng), arrivalTime)
+                    !call gaussian_distribution(m_s(ng), std_s(ng), arrivalTime, z2)
+                    end if
+                    w_low = w_low + w_s(ng)
+                    end do
+                if (arrivalTime .gt. 0) then
+                    positive_time = .true.
                 end if
-                w_low = w_low + w_s(ng)
-                end do
+            end do
             
             !time_offset = 23.9
             !time_offset = 20.9

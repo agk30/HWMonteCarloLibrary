@@ -128,7 +128,7 @@ module mod_tests
             implicit none
 
             double precision :: vector(3), point(3), speed, finalSpeed, time, mass, internalRatio, surfaceMass, initialSpeed
-            double precision :: deflectionAngle, ingoing(3), rand
+            double precision :: deflectionAngle, ingoing(3), rand, theta
             
             speed = 1800D0
 
@@ -136,7 +136,7 @@ module mod_tests
             mass = 17D-3
             surfaceMass = 100D0
 
-            call cosine_distribution(0, vector)
+            call cosine_distribution(0, vector, theta)
 
             ingoing(1) = 0.707106781
             ingoing(2) = 0

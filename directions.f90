@@ -105,7 +105,7 @@ module directions
 
         ! It must be noted that this cosine distribution of scattering angles is simply a function that fits data,
         ! not necessarily the absolute correct distribution one would expect to see
-        subroutine cosine_distribution(cosinePower, scatteredDirection)
+        subroutine cosine_distribution(cosinePower, scatteredDirection, theta)
 
             implicit none
         
