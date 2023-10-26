@@ -186,4 +186,49 @@ module mod_tests
             angle = acosd(dot_product(vector1,vector2)/(norm2(vector1)*norm2(vector2)))
 
         end subroutine two_vector_angle
+
+        subroutine cosine_distribution_fixed_phi(phi_in, scatteredDirection, theta)
+
+            implicit none
+
+            double precision :: rand1, phi
+            double precision, intent(in) :: phi_in
+            double precision, intent(out) :: theta
+            double precision, dimension(3), intent(out) :: scatteredDirection
+        
+            phi = phi_in*D_to_R
+
+            call random_number(rand1)
+
+            !theta = asin(SQRT(rand1))
+            theta = rand1*(pi/2)
+
+            scatteredDirection(1) = sin(theta)*cos(phi)
+            scatteredDirection(2) = sin(theta)*sin(phi)
+            scatteredDirection(3) = cos(theta)
+            
+        end subroutine cosine_distribution_fixed_phi
+
+        subroutine cosine_distribution_fixed_phi2(cosinePower, scatteredDirection, phi_in, theta)
+
+            implicit none
+        
+            double precision :: rand1, rand2, theta, x, phi
+            integer, intent(in) :: cosinePower, phi_in
+            double precision, dimension(3), intent(out) :: scatteredDirection
+        
+            call random_number(rand2)
+
+            phi = phi_in*D_to_R
+        
+            x = rand2**(1.0/dble(cosinePower+1.0))
+        
+            theta = dacos(x)
+
+            scatteredDirection(1) = sin(theta)*cos(phi)
+            scatteredDirection(2) = sin(theta)*sin(phi)
+            scatteredDirection(3) = cos(theta)
+            
+        end subroutine cosine_distribution_fixed_phi2
+
 end module mod_tests
